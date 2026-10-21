@@ -1,4 +1,4 @@
-import { CircleOff, Hand, HandFist, Scissors, type LucideIcon } from 'lucide-react'
+import { Cherry, CircleDot, CircleOff, Crown, Dices, Hand, HandFist, Scissors, Siren, type LucideIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
 
 /**
@@ -38,30 +38,61 @@ function AlcheRoroCover() {
   )
 }
 
-/** バステッド・アップ：緑のフェルトにダイスとチップ、サイレン */
+/**
+ * バステッド・アップ：緑のフェルトに、ゲームと同じ見た目の賭場ダイスを3つ（胴元は毎回3つ選んで振る）。
+ * 丁半＝チップの目（◎つき）、ルーレット＝供託の目、スロット＝サイレン
+ */
+type BustedFace = { kind: 'chip' | 'pot'; value: number; star?: boolean } | { kind: 'siren' }
+const BUSTED_DICE: { bg: string; ink: string; Icon: LucideIcon; face: BustedFace; x: number; y: number; r: number }[] = [
+  { bg: '#f3eee6', ink: '#1c1924', Icon: Dices, face: { kind: 'chip', value: 40, star: true }, x: 84, y: 166, r: -9 },
+  { bg: '#c81e1e', ink: '#ffffff', Icon: CircleDot, face: { kind: 'pot', value: 90 }, x: 200, y: 146, r: 5 },
+  { bg: '#f59e0b', ink: '#1c1924', Icon: Cherry, face: { kind: 'siren' }, x: 316, y: 168, r: -4 },
+]
+
+function BustedFaceMark({ face }: { face: BustedFace }) {
+  if (face.kind === 'siren')
+    return (
+      <g>
+        <rect x="-26" y="-26" width="52" height="52" rx="11" fill="#fff" stroke="#dc2626" strokeWidth="3.5" />
+        <Siren x={-17} y={-17} width={34} height={34} color="#dc2626" strokeWidth={2.75} />
+      </g>
+    )
+  const label = (
+    <text y="9" textAnchor="middle" fontSize="25" fontWeight="900" fontFamily="'M PLUS Rounded 1c', sans-serif" fill={face.kind === 'pot' ? '#000' : '#fff'}>
+      {face.value}
+    </text>
+  )
+  return (
+    <g>
+      {face.kind === 'pot' ? (
+        <rect x="-30" y="-24" width="60" height="48" rx="8" fill="#f2c14e" stroke="#000" strokeWidth="3" />
+      ) : (
+        <circle r="28" fill="#1c1924" stroke="#fff" strokeWidth="3" strokeDasharray="9 5" />
+      )}
+      {label}
+      {face.star && (
+        <g transform="translate(26 -24)">
+          <circle r="11" fill="#f2c14e" stroke="#000" strokeWidth="2" />
+          <Crown x={-7} y={-7} width={14} height={14} color="#000" strokeWidth={3} />
+        </g>
+      )}
+    </g>
+  )
+}
+
 function BustedUpCover() {
   return (
     <Frame bg="#0f3d2e" label="BUSTED UP! のカバー">
-      <circle cx="200" cy="150" r="190" fill="#14503c" />
-      <g fill="#f2c14e" stroke="#8a6a1c" strokeWidth="4">
-        <ellipse cx="300" cy="226" rx="44" ry="14" />
-        <ellipse cx="300" cy="212" rx="44" ry="14" />
-        <ellipse cx="300" cy="198" rx="44" ry="14" />
-      </g>
-      <g transform="rotate(-14 130 150)">
-        <rect x="70" y="90" width="120" height="120" rx="22" fill="#f3eee6" />
-        <circle cx="105" cy="125" r="13" fill="#1c1924" />
-        <circle cx="155" cy="175" r="13" fill="#1c1924" />
-        <circle cx="130" cy="150" r="13" fill="#ef4444" />
-      </g>
-      <g transform="rotate(10 250 110)">
-        <rect x="200" y="60" width="96" height="96" rx="18" fill="#f2c14e" />
-        <rect x="226" y="86" width="44" height="44" rx="8" fill="#1c1924" />
-      </g>
-      <g transform="translate(330 70)">
-        <circle r="30" fill="#fff" stroke="#ef4444" strokeWidth="6" />
-        <path d="M-12 10v-8a12 12 0 0 1 24 0v8z M-16 10h32v6h-32z" fill="#ef4444" />
-      </g>
+      <ellipse cx="200" cy="160" rx="210" ry="130" fill="#14503c" />
+      {BUSTED_DICE.map(({ bg, ink, Icon, face, x, y, r }) => (
+        <g key={bg} transform={`translate(${x} ${y}) rotate(${r})`}>
+          <rect x="-52" y="-46" width="104" height="104" rx="23" fill="#000" opacity="0.35" />
+          {face.kind === 'siren' && <rect x="-60" y="-60" width="120" height="120" rx="28" fill="none" stroke="#ef4444" strokeWidth="6" opacity="0.7" />}
+          <rect x="-52" y="-52" width="104" height="104" rx="23" fill={bg} />
+          <Icon x={-44} y={-44} width={20} height={20} color={ink} opacity={0.5} />
+          <BustedFaceMark face={face} />
+        </g>
+      ))}
     </Frame>
   )
 }
