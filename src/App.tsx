@@ -1,13 +1,11 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { Clock, Dices, Layers, LayoutGrid, Play, Sparkles, Users, X } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { Clock, Play, Sparkles, Users, X } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { Cover } from './components/Covers'
-import { GAMES, GENRES, gameUrl, isNew, type Game, type Genre } from './games'
+import { GAMES, GENRES, gameUrl, isNew, type Game } from './games'
 
 /** 仮の名前（決まったらここと index.html を変える） */
 const SITE_NAME = 'あそびのテーブル'
-
-const GENRE_ICON: Record<Genre, typeof Dices> = { board: LayoutGrid, dice: Dices, card: Layers }
 
 const RECENT_KEY = 'hub.recent'
 function loadRecent(): string[] {
@@ -27,11 +25,9 @@ function saveRecent(ids: string[]) {
 }
 
 export default function App() {
-  const [genre, setGenre] = useState<Genre | 'all'>('all')
   const [open, setOpen] = useState<Game | null>(null)
   const [recent, setRecent] = useState<string[]>(loadRecent)
 
-  const list = useMemo(() => (genre === 'all' ? GAMES : GAMES.filter((g) => g.genre === genre)), [genre])
   const lastPlayed = recent.map((id) => GAMES.find((g) => g.id === id)).filter((g): g is Game => !!g)[0]
 
   const play = (g: Game) => {
@@ -73,26 +69,9 @@ export default function App() {
         </section>
       )}
 
-      <nav aria-label="ジャンル" className="-mx-4 mb-4 overflow-x-auto px-4">
-        <div role="radiogroup" className="flex w-max gap-2">
-          <Chip active={genre === 'all'} onClick={() => setGenre('all')}>
-            すべて <span className="opacity-60">{GAMES.length}</span>
-          </Chip>
-          {(Object.keys(GENRES) as Genre[]).map((g) => {
-            const Icon = GENRE_ICON[g]
-            const n = GAMES.filter((x) => x.genre === g).length
-            return (
-              <Chip key={g} active={genre === g} onClick={() => setGenre(g)} disabled={n === 0}>
-                <Icon size={15} /> {GENRES[g]} <span className="opacity-60">{n}</span>
-              </Chip>
-            )
-          })}
-        </div>
-      </nav>
-
       <main>
         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
-          {list.map((g) => (
+          {GAMES.map((g) => (
             <li key={g.id}>
               <GameTile game={g} onOpen={() => setOpen(g)} />
             </li>
@@ -119,23 +98,6 @@ function Logo() {
       <circle cx="35.5" cy="25.5" r="1.8" fill="#fff" />
       <circle cx="32.5" cy="22.5" r="1.8" fill="#fff" />
     </svg>
-  )
-}
-
-function Chip({ active, disabled, onClick, children }: { active: boolean; disabled?: boolean; onClick: () => void; children: React.ReactNode }) {
-  return (
-    <button
-      type="button"
-      role="radio"
-      aria-checked={active}
-      disabled={disabled}
-      onClick={onClick}
-      className={`flex items-center gap-1 whitespace-nowrap rounded-full border-2 px-3.5 py-1.5 text-sm font-black transition disabled:opacity-40 ${
-        active ? 'border-[var(--text)] bg-[var(--text)] text-[var(--bg)]' : 'border-[var(--border)] bg-[var(--panel)] hover:border-[var(--muted)]'
-      }`}
-    >
-      {children}
-    </button>
   )
 }
 
