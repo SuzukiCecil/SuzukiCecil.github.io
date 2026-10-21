@@ -1,3 +1,4 @@
+import { CircleOff, Hand, HandFist, Scissors, type LucideIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
 
 /**
@@ -65,21 +66,27 @@ function BustedUpCover() {
   )
 }
 
-/** ヌルハンド：白と黒の札 */
+/** ヌルハンド：ゲームに出てくる4種類の札（グー・チョキ・パー・ヌル）を扇形に。絵柄はゲームと同じアイコン */
+const NULL_HAND_CARDS: { Icon: LucideIcon; label: string }[] = [
+  { Icon: HandFist, label: 'グー' },
+  { Icon: Scissors, label: 'チョキ' },
+  { Icon: Hand, label: 'パー' },
+  { Icon: CircleOff, label: 'NULL' },
+]
+
 function NullHandCover() {
   return (
     <Frame bg="#0b0b0d" label="NULL-HAND のカバー">
-      <g transform="translate(-22 0) rotate(-10 150 150)">
-        <rect x="88" y="60" width="124" height="176" rx="16" fill="#f4f4f5" />
-        <circle cx="150" cy="138" r="30" fill="none" stroke="#18181b" strokeWidth="9" />
-        <path d="M129 159l42-42" stroke="#18181b" strokeWidth="9" strokeLinecap="round" />
-        <text x="150" y="208" textAnchor="middle" fontSize="22" fontWeight="900" fill="#18181b" fontFamily="sans-serif">NULL</text>
-      </g>
-      <g transform="translate(22 0) rotate(10 250 150)">
-        <rect x="188" y="60" width="124" height="176" rx="16" fill="#18181b" stroke="#f4f4f5" strokeWidth="5" />
-        <path d="M228 118l40 40M268 118l-40 40" stroke="#22d3ee" strokeWidth="11" strokeLinecap="round" />
-        <text x="250" y="208" textAnchor="middle" fontSize="22" fontWeight="900" fill="#f4f4f5" fontFamily="sans-serif">?</text>
-      </g>
+      <ellipse cx="200" cy="290" rx="220" ry="90" fill="#22d3ee" opacity="0.08" />
+      {NULL_HAND_CARDS.map(({ Icon, label }, i) => (
+        <g key={label} transform={`rotate(${(i - 1.5) * 8.5} 200 700)`}>
+          <rect x="157" y="88" width="86" height="124" rx="12" fill="#f4f4f5" stroke="#d4d4d8" strokeWidth="3" />
+          <Icon x={176} y={106} width={48} height={48} color="#18181b" strokeWidth={2.2} />
+          <text x="200" y="188" textAnchor="middle" fontSize="15" fontWeight="900" fill="#18181b" fontFamily="'M PLUS Rounded 1c', sans-serif" letterSpacing="1">
+            {label}
+          </text>
+        </g>
+      ))}
     </Frame>
   )
 }
