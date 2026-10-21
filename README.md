@@ -20,3 +20,9 @@ npm run build   # dist/ に静的ビルド
 
 - 追加から30日間は NEW の印がつく。
 - 「前回あそんだゲーム」はブラウザの localStorage（`hub.recent`）に保存する。
+
+## 共有・ホーム画面
+
+- OGP画像（SNSに貼ったときの画像）とアイコンは `sh scripts/render-images.sh` で書き出す（開発サーバーを起動しておく）。入口の `public/og.png`・アイコンと、隣の各ゲームの `public/og.png` を作る。絵は `src/og/Render.tsx`（開発中だけ `?og=<ID>` / `?icon=any|maskable` で表示）。
+- `public/manifest.webmanifest` と `public/sw.js` でホーム画面に追加できる（PWA）。サービスワーカーはサイト全体（各ゲームも）を受け持ち、ページはネット優先、ビルド済みファイルは保存優先。各ゲームも本番では `/sw.js` を登録する。
+- プライバシーポリシーは `public/privacy/index.html`。保存するデータや外部サービスを変えたら更新する。

@@ -1,15 +1,20 @@
 import { ArrowLeftRight, Cherry, CircleDot, CircleOff, Crown, Dices, Hand, HandFist, Scissors, Siren, type LucideIcon } from 'lucide-react'
-import type { ReactNode } from 'react'
+import { createContext, useContext, type ReactNode } from 'react'
 
 /**
  * ゲームごとのカバー絵（4:3）。各ゲームの配色に合わせて描く。
  * 新しいゲームを足したら COVERS に追加する（未登録なら汎用の絵）。
  */
 
+/** cover：枠いっぱいに切り抜く（一覧）／contain：絵を全部見せる（OGP画像） */
+const FitContext = createContext<'cover' | 'contain'>('cover')
+
 function Frame({ bg, children, label }: { bg: string; children: ReactNode; label: string }) {
+  const fit = useContext(FitContext)
   return (
-    <svg viewBox="0 0 400 300" role="img" aria-label={label} className="block h-full w-full" preserveAspectRatio="xMidYMid slice">
-      <rect width="400" height="300" fill={bg} />
+    <svg viewBox="0 0 400 300" role="img" aria-label={label} className="block h-full w-full" preserveAspectRatio={fit === 'contain' ? 'xMidYMid meet' : 'xMidYMid slice'}>
+      {/* contain のとき余白も同じ色で埋まるよう、背景は絵の外まで広げる */}
+      <rect x="-400" y="-300" width="1200" height="900" fill={bg} />
       {children}
     </svg>
   )
@@ -141,7 +146,7 @@ const COVERS: Record<string, () => ReactNode> = {
   NullHand: NullHandCover,
 }
 
-export function Cover({ id, title }: { id: string; title: string }) {
+export function Cover({ id, title, fit = 'cover' }: { id: string; title: string; fit?: 'cover' | 'contain' }) {
   const C = COVERS[id]
-  return C ? <C /> : <DefaultCover title={title} />
+  return <FitContext.Provider value={fit}>{C ? <C /> : <DefaultCover title={title} />}</FitContext.Provider>
 }

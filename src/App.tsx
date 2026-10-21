@@ -2,11 +2,9 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { Clock, Play, Sparkles, Users, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Cover } from './components/Covers'
+import { Logo } from './components/Logo'
 import { GAMES, GENRES, gameUrl, isNew, type Game } from './games'
-
-/** サイト名（index.html の title と合わせる） */
-const SITE_NAME = 'IPPUKU GAMES'
-const SITE_KANA = 'イップクゲームズ'
+import { SITE_CATCH, SITE_KANA, SITE_NAME, SITE_SUB } from './site'
 
 const RECENT_KEY = 'hub.recent'
 function loadRecent(): string[] {
@@ -47,8 +45,8 @@ export default function App() {
               {SITE_NAME}
               <span className="ml-2 align-middle text-xs font-bold tracking-normal text-[var(--muted)]">{SITE_KANA}</span>
             </h1>
-            <p className="mt-0.5 text-sm font-bold">ちょっと一服、ひと勝負。</p>
-            <p className="text-xs font-bold text-[var(--muted)]">10分で遊べるオリジナルゲーム集</p>
+            <p className="mt-0.5 text-sm font-bold">{SITE_CATCH}</p>
+            <p className="text-xs font-bold text-[var(--muted)]">{SITE_SUB}</p>
           </div>
         </div>
       </header>
@@ -85,32 +83,20 @@ export default function App() {
         <p className="mt-6 text-center text-xs font-bold text-[var(--muted)]">ゲームは少しずつ増えていきます</p>
       </main>
 
-      <footer className="mt-auto pt-10 text-center text-[11px] text-[var(--muted)]">すべてのゲームはブラウザだけで遊べます（登録・課金なし）</footer>
+      <footer className="mt-auto space-y-1 pt-10 text-center text-[11px] text-[var(--muted)]">
+        <p>すべてのゲームはブラウザだけで遊べます（登録・課金なし）</p>
+        <p>
+          <a href="/privacy/" className="underline hover:text-[var(--text)]">
+            プライバシーポリシー
+          </a>
+        </p>
+      </footer>
 
       <GameSheet game={open} onClose={() => setOpen(null)} onPlay={play} />
     </div>
   )
 }
 
-/** 湯のみとサイコロ：一服しながら一局 */
-function Logo() {
-  return (
-    <svg viewBox="0 0 48 48" aria-hidden className="h-12 w-12 shrink-0 drop-shadow-sm">
-      <rect x="2" y="6" width="44" height="38" rx="10" fill="var(--wood)" />
-      <rect x="2" y="6" width="44" height="32" rx="10" fill="#14503c" />
-      <path d="M14 14c-2 2 2 3 0 5M19 13c-2 2 2 3 0 5" stroke="#fffaf2" strokeWidth="1.6" strokeLinecap="round" fill="none" opacity="0.8" />
-      <path d="M8 21h17l-1.6 11.5a3 3 0 0 1-3 2.5h-7.8a3 3 0 0 1-3-2.5z" fill="#fffaf2" />
-      <ellipse cx="16.5" cy="21" rx="8.5" ry="2" fill="#9cba5b" />
-      <rect x="10" y="26" width="13" height="2" rx="1" fill="#e8743b" opacity="0.85" />
-      <g transform="rotate(12 34 27)">
-        <rect x="27" y="20" width="14" height="14" rx="3.5" fill="#e8743b" />
-        <circle cx="31" cy="24" r="1.6" fill="#fff" />
-        <circle cx="34" cy="27" r="1.6" fill="#fff" />
-        <circle cx="37" cy="30" r="1.6" fill="#fff" />
-      </g>
-    </svg>
-  )
-}
 
 function GameTile({ game, onOpen }: { game: Game; onOpen: () => void }) {
   return (
