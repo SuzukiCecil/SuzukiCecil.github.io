@@ -24,6 +24,8 @@ export interface Game {
   players: string
   /** 追加した日（新着の印に使う） */
   added: string
+  /** 開発中に開く、そのゲームの開発サーバーのポート */
+  devPort: number
 }
 
 export const GAMES: Game[] = [
@@ -42,6 +44,7 @@ export const GAMES: Game[] = [
     minutes: '3〜5分',
     players: 'CPUと1対1',
     added: '2026-10-20',
+    devPort: 5181,
   },
   {
     id: 'BustedUp',
@@ -58,6 +61,7 @@ export const GAMES: Game[] = [
     minutes: '10分前後',
     players: 'あなた＋CPU2〜3人',
     added: '2026-10-20',
+    devPort: 5180,
   },
   {
     id: 'AlcheRoro',
@@ -74,11 +78,12 @@ export const GAMES: Game[] = [
     minutes: '10分前後',
     players: 'CPUと1対1',
     added: '2026-10-19',
+    devPort: 5179,
   },
 ]
 
-/** 開発中は公開済みのゲームを開く。本番は同じドメインの /<id>/ */
-export const gameUrl = (g: Game) => `${import.meta.env.DEV ? 'https://suzukicecil.github.io' : ''}/${g.id}/`
+/** 本番は同じドメインの /<id>/。開発中は各ゲームの開発サーバー（npx vite --port <devPort>） */
+export const gameUrl = (g: Game) => (import.meta.env.DEV ? `http://localhost:${g.devPort}/` : `/${g.id}/`)
 
 /** 追加から30日以内なら新着 */
 export const isNew = (g: Game, now = Date.now()) => now - new Date(g.added).getTime() < 30 * 24 * 60 * 60 * 1000
