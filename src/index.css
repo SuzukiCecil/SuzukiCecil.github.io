@@ -1,0 +1,75 @@
+@import 'tailwindcss';
+
+/* 卓を囲むような、あたたかい木とフェルトの色 */
+:root {
+  --bg: #f4ede1;
+  --bg-dot: rgba(120, 90, 60, 0.08);
+  --panel: #fffaf2;
+  --card: #f7f0e4;
+  --border: #e4d8c5;
+  --text: #3b2f25;
+  --muted: #8a7a68;
+  --accent: #e8743b;
+  --accent-ink: #ffffff;
+  --wood: #b9804c;
+  --wood-dark: #8f5f35;
+  --shadow: 0 2px 0 rgba(90, 60, 30, 0.12), 0 8px 24px rgba(90, 60, 30, 0.08);
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #1d1915;
+    --bg-dot: rgba(255, 230, 200, 0.04);
+    --panel: #28221c;
+    --card: #322a22;
+    --border: #44392e;
+    --text: #f3eadf;
+    --muted: #b3a491;
+    --accent: #f08a52;
+    --accent-ink: #1d1915;
+    --wood: #9a6a3f;
+    --wood-dark: #6f4a29;
+    --shadow: 0 2px 0 rgba(0, 0, 0, 0.35), 0 8px 24px rgba(0, 0, 0, 0.25);
+    color-scheme: dark;
+  }
+}
+:root[data-theme='dark'] {
+  --bg: #1d1915;
+  --bg-dot: rgba(255, 230, 200, 0.04);
+  --panel: #28221c;
+  --card: #322a22;
+  --border: #44392e;
+  --text: #f3eadf;
+  --muted: #b3a491;
+  --accent: #f08a52;
+  --accent-ink: #1d1915;
+  --wood: #9a6a3f;
+  --wood-dark: #6f4a29;
+  --shadow: 0 2px 0 rgba(0, 0, 0, 0.35), 0 8px 24px rgba(0, 0, 0, 0.25);
+  color-scheme: dark;
+}
+
+html,
+body {
+  margin: 0;
+  background-color: var(--bg);
+  background-image: radial-gradient(var(--bg-dot) 1.5px, transparent 1.5px);
+  background-size: 18px 18px;
+  color: var(--text);
+  font-family: 'M PLUS Rounded 1c', system-ui, -apple-system, 'Hiragino Sans', sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#root {
+  min-height: 100dvh;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
