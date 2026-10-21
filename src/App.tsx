@@ -4,8 +4,9 @@ import { useEffect, useState } from 'react'
 import { Cover } from './components/Covers'
 import { GAMES, GENRES, gameUrl, isNew, type Game } from './games'
 
-/** 仮の名前（決まったらここと index.html を変える） */
-const SITE_NAME = 'あそびのテーブル'
+/** サイト名（index.html の title と合わせる） */
+const SITE_NAME = 'IPPUKU GAMES'
+const SITE_KANA = 'イップクゲームズ'
 
 const RECENT_KEY = 'hub.recent'
 function loadRecent(): string[] {
@@ -42,8 +43,12 @@ export default function App() {
         <div className="flex items-center gap-3">
           <Logo />
           <div className="leading-tight">
-            <h1 className="text-2xl font-black tracking-wide sm:text-3xl">{SITE_NAME}</h1>
-            <p className="text-sm font-bold text-[var(--muted)]">10分で遊べる、テーブルゲームの小箱</p>
+            <h1 className="text-2xl font-black tracking-wide sm:text-3xl">
+              {SITE_NAME}
+              <span className="ml-2 align-middle text-xs font-bold tracking-normal text-[var(--muted)]">{SITE_KANA}</span>
+            </h1>
+            <p className="mt-0.5 text-sm font-bold">ちょっと一服、ひと勝負。</p>
+            <p className="text-xs font-bold text-[var(--muted)]">10分で遊べるオリジナルゲーム集</p>
           </div>
         </div>
       </header>
@@ -87,16 +92,22 @@ export default function App() {
   )
 }
 
+/** 湯のみとサイコロ：一服しながら一局 */
 function Logo() {
   return (
     <svg viewBox="0 0 48 48" aria-hidden className="h-12 w-12 shrink-0 drop-shadow-sm">
       <rect x="2" y="6" width="44" height="38" rx="10" fill="var(--wood)" />
       <rect x="2" y="6" width="44" height="32" rx="10" fill="#14503c" />
-      <rect x="9" y="12" width="16" height="22" rx="3" fill="#fffaf2" transform="rotate(-8 17 23)" />
-      <rect x="25" y="15" width="15" height="15" rx="4" fill="#e8743b" />
-      <circle cx="29.5" cy="19.5" r="1.8" fill="#fff" />
-      <circle cx="35.5" cy="25.5" r="1.8" fill="#fff" />
-      <circle cx="32.5" cy="22.5" r="1.8" fill="#fff" />
+      <path d="M14 14c-2 2 2 3 0 5M19 13c-2 2 2 3 0 5" stroke="#fffaf2" strokeWidth="1.6" strokeLinecap="round" fill="none" opacity="0.8" />
+      <path d="M8 21h17l-1.6 11.5a3 3 0 0 1-3 2.5h-7.8a3 3 0 0 1-3-2.5z" fill="#fffaf2" />
+      <ellipse cx="16.5" cy="21" rx="8.5" ry="2" fill="#9cba5b" />
+      <rect x="10" y="26" width="13" height="2" rx="1" fill="#e8743b" opacity="0.85" />
+      <g transform="rotate(12 34 27)">
+        <rect x="27" y="20" width="14" height="14" rx="3.5" fill="#e8743b" />
+        <circle cx="31" cy="24" r="1.6" fill="#fff" />
+        <circle cx="34" cy="27" r="1.6" fill="#fff" />
+        <circle cx="37" cy="30" r="1.6" fill="#fff" />
+      </g>
     </svg>
   )
 }
