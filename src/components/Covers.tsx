@@ -1,4 +1,4 @@
-import { Cherry, CircleDot, CircleOff, Crown, Dices, Hand, HandFist, Scissors, Siren, type LucideIcon } from 'lucide-react'
+import { ArrowLeftRight, Cherry, CircleDot, CircleOff, Crown, Dices, Hand, HandFist, Scissors, Siren, type LucideIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
 
 /**
@@ -22,11 +22,14 @@ function AlcheRoroCover() {
   return (
     <Frame bg="#efe7da" label="AlcheRoro のカバー">
       <rect x="196" y="58" width="176" height="176" rx="18" fill="#d9cfbf" />
+      <rect x="204" y="106" width="168" height="40" rx="10" fill="#fff" opacity="0.55" />
       {tiles.map((t) =>
         t.x === 2 && t.y === 1 ? null : <rect key={`${t.x}-${t.y}`} x={208 + t.x * 40} y={70 + t.y * 40} width="32" height="32" rx="8" fill={t.c} opacity="0.9" />,
       )}
-      {/* 空きマスの矢印トークン */}
-      <path d="M304 112l13 24h-26z" fill="#2a2420" />
+      {/* 矢印トークン（ゲームと同じ黒丸・白縁の左右矢印）。今は横向きなので、同じ行が取れるライン */}
+      <rect x="288" y="110" width="32" height="32" rx="8" fill="#c4b8a5" />
+      <circle cx="304" cy="126" r="16" fill="#0f172a" stroke="#fff" strokeWidth="3.5" />
+      <ArrowLeftRight x={294} y={116} width={20} height={20} color="#fff" strokeWidth={3} />
       <g transform="rotate(-8 120 150)">
         <rect x="40" y="40" width="150" height="210" rx="14" fill="#fff" stroke="#6d28d9" strokeWidth="6" />
         <image href={`${import.meta.env.BASE_URL}covers/alcheroro.jpg`} x="49" y="49" width="132" height="132" preserveAspectRatio="xMidYMid slice" />
