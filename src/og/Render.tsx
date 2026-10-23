@@ -40,9 +40,9 @@ function HubOg() {
         <p className="mt-8 text-5xl font-black">{SITE_CATCH}</p>
         <p className="mt-3 text-2xl font-bold text-[var(--muted)]">{SITE_SUB}</p>
       </div>
-      <div className="absolute bottom-[56px] left-[72px] flex gap-6">
+      <div className="absolute bottom-[56px] left-[72px] flex gap-5">
         {GAMES.map((g) => (
-          <div key={g.id} className="w-[320px] overflow-hidden rounded-3xl border-2 border-[var(--border)] bg-[var(--panel)] shadow-[var(--shadow)]">
+          <div key={g.id} className="w-[250px] overflow-hidden rounded-3xl border-2 border-[var(--border)] bg-[var(--panel)] shadow-[var(--shadow)]">
             <div className="aspect-[4/3]">
               <Cover id={g.id} title={g.title} />
             </div>

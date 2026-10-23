@@ -1,11 +1,12 @@
 /** ゲーム集に並べるゲームの一覧。新しいゲームはここに足す（カバー絵は components/Covers.tsx） */
 
-export type Genre = 'board' | 'dice' | 'card'
+export type Genre = 'board' | 'dice' | 'card' | 'puzzle'
 
 export const GENRES: Record<Genre, string> = {
   board: 'ボード',
   dice: 'ダイス',
   card: 'カード',
+  puzzle: 'パズル',
 }
 
 export interface Game {
@@ -22,6 +23,8 @@ export interface Game {
   genre: Genre
   minutes: string
   players: string
+  /** 詳細の3つ目の欄（CPUの強さなど） */
+  extra: { label: string; value: string }
   /** 追加した日（新着の印に使う） */
   added: string
   /** 開発中に開く、そのゲームの開発サーバーのポート */
@@ -29,6 +32,24 @@ export interface Game {
 }
 
 export const GAMES: Game[] = [
+  {
+    id: 'LoopLine',
+    title: 'LOOP LINE',
+    kana: 'ループライン',
+    catch: '路線をつないで、環状線を。',
+    description: '色の合う線路札をつないで、2つの駅を通る環状線を1本完成させる1人用パズル。手札は5枚、お助けカードはどれも1回きり。どこから伸ばし、どこで合流させるか。',
+    rules: [
+      '手札から線路札を1枚選び、のびている線の先に置く',
+      '隣り合う線は同じ色でつなぐ。盤の外や線のない辺には突き当てられない',
+      '2つの駅を両方通る輪ができたらクリア。置ける札がなくなったら終わり',
+    ],
+    genre: 'puzzle',
+    minutes: '5分前後',
+    players: '1人用',
+    extra: { label: 'お助け', value: '3種類・各1回' },
+    added: '2026-10-23',
+    devPort: 5183,
+  },
   {
     id: 'NullHand',
     title: 'NULL-HAND',
@@ -43,6 +64,7 @@ export const GAMES: Game[] = [
     genre: 'card',
     minutes: '3〜5分',
     players: 'CPUと1対1',
+    extra: { label: 'CPU', value: '3段階の強さ' },
     added: '2026-10-20',
     devPort: 5181,
   },
@@ -60,6 +82,7 @@ export const GAMES: Game[] = [
     genre: 'dice',
     minutes: '10分前後',
     players: 'あなた＋CPU2〜3人',
+    extra: { label: 'CPU', value: '3段階の強さ' },
     added: '2026-10-20',
     devPort: 5180,
   },
@@ -77,6 +100,7 @@ export const GAMES: Game[] = [
     genre: 'board',
     minutes: '10分前後',
     players: 'CPUと1対1',
+    extra: { label: 'CPU', value: '3段階の強さ' },
     added: '2026-10-19',
     devPort: 5179,
   },

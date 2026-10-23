@@ -130,6 +130,95 @@ function NullHandCover() {
   )
 }
 
+/**
+ * ループライン：夜の路線図。白いマスに4色の路線がつながった環状線で、1マスだけ空いていて、そこにはまる札が降りてくる。
+ * 左上と右下の角が駅（白い丸）。線の端の色は隣のマスと必ず同じ。
+ */
+const LOOP_COLORS = ['#e5484d', '#2f6fdf', '#f0b400', '#2ea44f']
+/** 環状線のマス（5×4 の外周を時計回り）。in/out は線が入る辺と出る辺（0上・1右・2下・3左） */
+const LOOP_RING: { x: number; y: number; inS: number; outS: number }[] = (() => {
+  const cells: [number, number][] = []
+  for (let x = 0; x < 5; x++) cells.push([x, 0])
+  for (let y = 1; y < 4; y++) cells.push([4, y])
+  for (let x = 3; x >= 0; x--) cells.push([x, 3])
+  for (let y = 2; y >= 1; y--) cells.push([0, y])
+  const side = (a: [number, number], b: [number, number]) => (b[0] > a[0] ? 1 : b[0] < a[0] ? 3 : b[1] > a[1] ? 2 : 0)
+  return cells.map((c, i) => {
+    const prev = cells[(i - 1 + cells.length) % cells.length]
+    const next = cells[(i + 1) % cells.length]
+    return { x: c[0], y: c[1], inS: side(c, prev), outS: side(c, next) }
+  })
+})()
+const LOOP_GAP = 10
+/** 境目 k の色（隣り合う境目は必ず違う色。14か所で一周する） */
+const loopColor = (k: number) => LOOP_COLORS[(k % LOOP_RING.length) % 4]
+
+function LoopTile({ inS, outS, cIn, cOut, station = false }: { inS: number; outS: number; cIn: string; cOut: string; station?: boolean }) {
+  const mid = [
+    [26, 0],
+    [52, 26],
+    [26, 52],
+    [0, 26],
+  ]
+  const [a, b] = [mid[inS], mid[outS]]
+  let h0: string, h1: string, m: [number, number]
+  if ((inS + outS) % 2 === 0) {
+    h0 = `M${a[0]} ${a[1]} L26 26`
+    h1 = `M26 26 L${b[0]} ${b[1]}`
+    m = [26, 26]
+  } else {
+    const cx = a[0] === 26 ? b[0] : a[0]
+    const cy = a[1] === 26 ? b[1] : a[1]
+    m = [cx + (26 - cx) / Math.SQRT2, cy + (26 - cy) / Math.SQRT2]
+    const ang = (p: number[]) => Math.atan2(p[1] - cy, p[0] - cx)
+    let d = ang(m) - ang(a)
+    while (d <= -Math.PI) d += 2 * Math.PI
+    while (d > Math.PI) d -= 2 * Math.PI
+    const sw = d > 0 ? 1 : 0
+    h0 = `M${a[0]} ${a[1]} A26 26 0 0 ${sw} ${m[0]} ${m[1]}`
+    h1 = `M${m[0]} ${m[1]} A26 26 0 0 ${sw} ${b[0]} ${b[1]}`
+  }
+  return (
+    <g>
+      <rect x="1" y="1" width="50" height="50" rx="6" fill="#f7f5ef" />
+      <path d={h0} stroke={cIn} strokeWidth="10" fill="none" />
+      <path d={h1} stroke={cOut} strokeWidth="10" fill="none" />
+      {station && <circle cx={m[0]} cy={m[1]} r="6" fill="#fff" stroke="#1f2937" strokeWidth="3" />}
+    </g>
+  )
+}
+
+function LoopLineCover() {
+  const t = 54
+  const ox = 200 - (5 * t) / 2
+  const oy = 46
+  const gap = LOOP_RING[LOOP_GAP]
+  return (
+    <Frame bg="#0f1620" label="LOOP LINE のカバー">
+      {/* 路線図の盤 */}
+      <rect x={ox - 14} y={oy - 14} width={5 * t + 24} height={4 * t + 24} rx="16" fill="#1c2836" />
+      {Array.from({ length: 20 }, (_, i) => (
+        <rect key={i} x={ox + (i % 5) * t - 1} y={oy + Math.floor(i / 5) * t - 1} width="52" height="52" rx="6" fill="#243446" />
+      ))}
+      {LOOP_RING.map((c, i) =>
+        i === LOOP_GAP ? (
+          <rect key={i} x={ox + c.x * t + 1} y={oy + c.y * t + 1} width="48" height="48" rx="6" fill="none" stroke="#ffb020" strokeWidth="3" strokeDasharray="6 5" />
+        ) : (
+          <g key={i} transform={`translate(${ox + c.x * t - 1} ${oy + c.y * t - 1})`}>
+            <LoopTile inS={c.inS} outS={c.outS} cIn={loopColor(i)} cOut={loopColor(i + 1)} station={i === 0 || i === 7} />
+          </g>
+        ),
+      )}
+      {/* 空いたマスにはまる札が、手札から降りてくる */}
+      <g transform={`translate(${ox + gap.x * t + 8} ${oy + gap.y * t + 26}) rotate(-9 26 26)`}>
+        <rect x="-3" y="5" width="56" height="56" rx="8" fill="#000" opacity="0.35" />
+        <rect x="-2" y="-2" width="56" height="56" rx="8" fill="none" stroke="#ffb020" strokeWidth="4" />
+        <LoopTile inS={gap.inS} outS={gap.outS} cIn={loopColor(LOOP_GAP)} cOut={loopColor(LOOP_GAP + 1)} />
+      </g>
+    </Frame>
+  )
+}
+
 function DefaultCover({ title }: { title: string }) {
   return (
     <Frame bg="#e8743b" label={`${title} のカバー`}>
@@ -141,6 +230,7 @@ function DefaultCover({ title }: { title: string }) {
 }
 
 const COVERS: Record<string, () => ReactNode> = {
+  LoopLine: LoopLineCover,
   AlcheRoro: AlcheRoroCover,
   BustedUp: BustedUpCover,
   NullHand: NullHandCover,

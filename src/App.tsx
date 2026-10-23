@@ -183,7 +183,7 @@ function GameSheet({ game, onClose, onPlay }: { game: Game | null; onClose: () =
               <dl className="mt-4 grid grid-cols-3 gap-2 text-center">
                 <Info icon={<Clock size={16} />} label="時間" value={game.minutes} />
                 <Info icon={<Users size={16} />} label="人数" value={game.players} />
-                <Info icon={<Sparkles size={16} />} label="CPU" value="3段階の強さ" />
+                <Info icon={<Sparkles size={16} />} label={game.extra.label} value={game.extra.value} />
               </dl>
 
               <h3 className="mt-5 text-sm font-black">あそびかた</h3>

@@ -17,7 +17,7 @@ shot() { # shot <クエリ> <幅> <高さ> <出力> [透過]
 }
 
 shot og=hub 1200 630 public/og.png
-for g in AlcheRoro BustedUp NullHand; do
+for g in AlcheRoro BustedUp NullHand LoopLine; do
   shot "og=$g" 1200 630 "../$g/public/og.png"
 done
 shot icon=any 512 512 "$TMP/icon.png" transparent
