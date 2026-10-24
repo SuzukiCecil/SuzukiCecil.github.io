@@ -135,13 +135,12 @@ function NullHandCover() {
  * 左上と右下の角が駅（白い丸）。線の端の色は隣のマスと必ず同じ。
  */
 const LOOP_COLORS = ['#e5484d', '#2f6fdf', '#f0b400', '#2ea44f']
-/** 環状線のマス（5×4 の外周を時計回り）。in/out は線が入る辺と出る辺（0上・1右・2下・3左） */
+/** 環状線のマス（4×4 の盤で、曲がる札だけでできた階段状の輪）。in/out は線が入る辺と出る辺（0上・1右・2下・3左） */
 const LOOP_RING: { x: number; y: number; inS: number; outS: number }[] = (() => {
-  const cells: [number, number][] = []
-  for (let x = 0; x < 5; x++) cells.push([x, 0])
-  for (let y = 1; y < 4; y++) cells.push([4, y])
-  for (let x = 3; x >= 0; x--) cells.push([x, 3])
-  for (let y = 2; y >= 1; y--) cells.push([0, y])
+  const cells: [number, number][] = [
+    [1, 0], [2, 0], [2, 1], [3, 1], [3, 2], [2, 2],
+    [2, 3], [1, 3], [1, 2], [0, 2], [0, 1], [1, 1],
+  ]
   const side = (a: [number, number], b: [number, number]) => (b[0] > a[0] ? 1 : b[0] < a[0] ? 3 : b[1] > a[1] ? 2 : 0)
   return cells.map((c, i) => {
     const prev = cells[(i - 1 + cells.length) % cells.length]
@@ -149,8 +148,9 @@ const LOOP_RING: { x: number; y: number; inS: number; outS: number }[] = (() => 
     return { x: c[0], y: c[1], inS: side(c, prev), outS: side(c, next) }
   })
 })()
-const LOOP_GAP = 10
-/** 境目 k の色（隣り合う境目は必ず違う色。14か所で一周する） */
+const LOOP_GAP = 6
+const LOOP_STATIONS = [2, 8]
+/** 境目 k の色（隣り合う境目は必ず違う色。12か所で一周する） */
 const loopColor = (k: number) => LOOP_COLORS[(k % LOOP_RING.length) % 4]
 
 function LoopTile({ inS, outS, cIn, cOut, station = false }: { inS: number; outS: number; cIn: string; cOut: string; station?: boolean }) {
@@ -190,22 +190,22 @@ function LoopTile({ inS, outS, cIn, cOut, station = false }: { inS: number; outS
 
 function LoopLineCover() {
   const t = 54
-  const ox = 200 - (5 * t) / 2
+  const ox = 200 - (4 * t) / 2
   const oy = 46
   const gap = LOOP_RING[LOOP_GAP]
   return (
     <Frame bg="#0f1620" label="LOOP LINE のカバー">
       {/* 路線図の盤 */}
-      <rect x={ox - 14} y={oy - 14} width={5 * t + 24} height={4 * t + 24} rx="16" fill="#1c2836" />
-      {Array.from({ length: 20 }, (_, i) => (
-        <rect key={i} x={ox + (i % 5) * t - 1} y={oy + Math.floor(i / 5) * t - 1} width="52" height="52" rx="6" fill="#243446" />
+      <rect x={ox - 14} y={oy - 14} width={4 * t + 24} height={4 * t + 24} rx="16" fill="#1c2836" />
+      {Array.from({ length: 16 }, (_, i) => (
+        <rect key={i} x={ox + (i % 4) * t - 1} y={oy + Math.floor(i / 4) * t - 1} width="52" height="52" rx="6" fill="#243446" />
       ))}
       {LOOP_RING.map((c, i) =>
         i === LOOP_GAP ? (
           <rect key={i} x={ox + c.x * t + 1} y={oy + c.y * t + 1} width="48" height="48" rx="6" fill="none" stroke="#ffb020" strokeWidth="3" strokeDasharray="6 5" />
         ) : (
           <g key={i} transform={`translate(${ox + c.x * t - 1} ${oy + c.y * t - 1})`}>
-            <LoopTile inS={c.inS} outS={c.outS} cIn={loopColor(i)} cOut={loopColor(i + 1)} station={i === 0 || i === 7} />
+            <LoopTile inS={c.inS} outS={c.outS} cIn={loopColor(i)} cOut={loopColor(i + 1)} station={LOOP_STATIONS.includes(i)} />
           </g>
         ),
       )}
